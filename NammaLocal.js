@@ -11,7 +11,6 @@ const reviewForm = document.getElementById('review-form');
 const modalReviewsList = document.getElementById('modal-reviews-list');
 const modalReviewCount = document.getElementById('modal-review-count');
 
-// Owner Authentication Elements
 const ownerLoginBtn = document.getElementById('owner-login-btn');
 const ownerLogoutBtn = document.getElementById('owner-logout-btn');
 const adminStatusBar = document.getElementById('admin-status-bar');
@@ -21,11 +20,65 @@ const areaSearch = document.getElementById('area-search');
 const serviceFilter = document.getElementById('service-filter');
 const chips = document.querySelectorAll('.chip');
 
-let experts = [];
+// --- 1. SAMPLE DUMMY DATA ---
+const dummyExperts = [
+    {
+        id: "dummy1",
+        name: "SK Concrete Mixer Machines",
+        phone: "9876543210",
+        prof: "mixer",
+        location: "Salem, New Bus Stand",
+        rating: "4.8",
+        image: null,
+        isPremium: true,
+        reviews: [
+            { stars: 5, text: "Excellent condition mixer machines. Ontime delivery." },
+            { stars: 4, text: "Good service, operators are very polite." }
+        ]
+    },
+    {
+        id: "dummy2",
+        name: "AK Power Generators",
+        phone: "9123456789",
+        prof: "generator",
+        location: "Erode, Central Bus Stand",
+        rating: "4.5",
+        image: null,
+        isPremium: false,
+        reviews: [
+            { stars: 5, text: "Heavy load performance is top notch. Highly recommended!" }
+        ]
+    },
+    {
+        id: "dummy3",
+        name: "Vasantham Sounds & Tent House",
+        phone: "9345678901",
+        prof: "sound",
+        location: "Salem, Ammapet",
+        rating: "4.9",
+        image: null,
+        isPremium: true,
+        reviews: [
+            { stars: 5, text: "Super crystal clear sound effects. Best price in town." }
+        ]
+    }
+];
+
+// --- 2. LOCAL STORAGE INTEGRATION ---
+// Check checking if data exists in local storage, if not, load dummy data
+let experts = JSON.parse(localStorage.getItem('rental_experts'));
+if (!experts || experts.length === 0) {
+    experts = dummyExperts;
+    localStorage.setItem('rental_experts', JSON.stringify(experts));
+}
+
 let activeExpertId = null; 
 let isOwnerLoggedIn = false; 
 
-// PREMIUM RANKING SORT (Premium first -> then Rating highest)
+function saveToLocalStorage() {
+    localStorage.setItem('rental_experts', JSON.stringify(experts));
+}
+
 function sortExpertsData(array) {
     return array.sort((a, b) => {
         if (a.isPremium && !b.isPremium) return -1;
@@ -34,18 +87,16 @@ function sortExpertsData(array) {
     });
 }
 
-// Function to render expert profiles
 function renderExperts(dataToRender = experts) {
     expertGrid.innerHTML = '';
-    
     const sortedData = sortExpertsData([...dataToRender]);
     resultsCount.textContent = `${sortedData.length} பதிவுகள் உள்ளன`;
 
     if(sortedData.length === 0) {
         expertGrid.innerHTML = `
             <div style="text-align:center; padding:40px; color:#64748B; grid-column: 1/-1;">
-                <i class="fa-solid fa-folder-open" style="font-size:40px; margin-bottom:10px; color:#cbd5e1;"></i>
-                <p>இந்த ஏரியாவில் பதிவுகள் எதுவும் இல்லை! முதல் ஆளாகப் பதிவு செய்யுங்கள்.</p>
+                <i class="fa-solid fa-boxes-empty" style="font-size:40px; margin-bottom:10px; color:#cbd5e1;"></i>
+                <p>இந்த ஏரியாவில் வாடகை பொருட்கள் எதுவும் இன்னும் பதிவு செய்யப்படவில்லை!</p>
             </div>`;
         return;
     }
@@ -54,43 +105,39 @@ function renderExperts(dataToRender = experts) {
         const card = document.createElement('div');
         card.classList.add('expert-card');
         
-        if (expert.isPremium) {
-            card.classList.add('premium-active');
-        }
+        if (expert.isPremium) card.classList.add('premium-active');
         
         const isBadRating = parseFloat(expert.rating) <= 3.0;
         if (isOwnerLoggedIn && isBadRating && !expert.isPremium) {
             card.classList.add('bad-review-alert');
         }
         
-        // Icon rendering based on Category type
         let avatarHTML = '';
         if (expert.image) {
             avatarHTML = `<img src="${expert.image}" alt="${expert.name}" class="avatar-image">`;
         } else {
-            let iconClass = 'fa-taxi';
-            if (expert.prof === 'mahal') iconClass = 'fa-building-columns';
-            if (expert.prof === 'planner') iconClass = 'fa-wand-magic-sparkles';
+            let iconClass = 'fa-shuttle-space'; 
+            if (expert.prof === 'lift') iconClass = 'fa-arrow-up-from-ground-water';
+            if (expert.prof === 'generator') iconClass = 'fa-charging-station';
+            if (expert.prof === 'sound') iconClass = 'fa-volume-high';
+            if (expert.prof === 'tents') iconClass = 'fa-campground';
             avatarHTML = `<div class="avatar-container"><i class="fa-solid ${iconClass}"></i></div>`;
         }
         
         let tagHTML = '';
         if (expert.isPremium) {
-            tagHTML = `<span class="premium-tag"><i class="fa-solid fa-crown"></i> Premium</span>`;
+            tagHTML = `<span class="premium-tag"><i class="fa-solid fa-crown"></i> Verified Owner</span>`;
         } else if (isOwnerLoggedIn && isBadRating) {
-            tagHTML = `<span class="bad-review-tag"><i class="fa-solid fa-triangle-exclamation"></i> Bad Review</span>`;
+            tagHTML = `<span class="bad-review-tag"><i class="fa-solid fa-triangle-exclamation"></i> Low Rating</span>`;
         }
         
         let ownerActionsHTML = '';
         if (isOwnerLoggedIn) {
             const premBtnText = expert.isPremium ? 'Remove Premium' : 'Make Premium';
             const premClass = expert.isPremium ? 'premium-toggle-btn is-prem' : 'premium-toggle-btn';
-            
             ownerActionsHTML = `
                 <button class="${premClass}" onclick="togglePremiumStatus('${expert.id}')">${premBtnText}</button>
-                <button class="delete-btn" onclick="deleteExpertProfile('${expert.id}')">
-                    <i class="fa-solid fa-trash-can"></i>
-                </button>
+                <button class="delete-btn" onclick="deleteExpertProfile('${expert.id}')"><i class="fa-solid fa-trash-can"></i></button>
             `;
         }
         
@@ -107,9 +154,7 @@ function renderExperts(dataToRender = experts) {
             </div>
             <div class="card-right-actions">
                 <div class="action-buttons-row">
-                    <a href="tel:${expert.phone}" class="call-btn-link">
-                        <i class="fa-solid fa-phone"></i>
-                    </a>
+                    <a href="tel:${expert.phone}" class="call-btn-link"><i class="fa-solid fa-phone"></i></a>
                     ${ownerActionsHTML}
                 </div>
             </div>
@@ -119,36 +164,36 @@ function renderExperts(dataToRender = experts) {
 }
 
 function getProfTamil(prof) {
-    if(prof === 'driver') return 'Cab / Auto';
-    if(prof === 'mahal') return 'திருமண மண்டபம்';
-    if(prof === 'planner') return 'ஃபங்ஷன் பிளானர்';
+    if(prof === 'mixer') return 'கான்கிரீட் மிக்ஸர்';
+    if(prof === 'lift') return 'கன்ஸ்ட்ரக்ஷன் லிஃப்ட்';
+    if(prof === 'generator') return 'ஜெனரேட்டர் ரெண்டல்';
+    if(prof === 'sound') return 'சவுண்ட் & மைக் செட்';
+    if(prof === 'tents') return 'பந்தல் & சேர்ஸ்';
     return prof;
 }
 
-// OWNER PREMIUM SWITCH TOGGLE
 window.togglePremiumStatus = function(id) {
     const expert = experts.find(e => e.id === id);
     if (expert) {
         expert.isPremium = !expert.isPremium;
+        saveToLocalStorage(); // <-- Saved state Change
         handleSearch();
     }
 }
 
-// OWNER LOGIN (Password change section)
 ownerLoginBtn.addEventListener('click', () => {
     const password = prompt("பாஸ்வேர்ட் அடிக்கவும்:");
-    if (password === "js1602") { // Change password here
+    if (password === "admin123") {
         isOwnerLoggedIn = true;
         adminStatusBar.style.display = 'flex';
         ownerLoginBtn.style.display = 'none';
         handleSearch();
-        alert("Owner Mode Active! பிரீமியம் கார்டுகளை செட் செய்யலாம்.");
+        alert("Owner Mode Active!");
     } else {
         alert("தவறான பாஸ்வேர்ட்!");
     }
 });
 
-// OWNER LOGOUT
 ownerLogoutBtn.addEventListener('click', () => {
     isOwnerLoggedIn = false;
     adminStatusBar.style.display = 'none';
@@ -156,15 +201,14 @@ ownerLogoutBtn.addEventListener('click', () => {
     handleSearch();
 });
 
-// ADMIN PROFILE EXPELLER
 window.deleteExpertProfile = function(id) {
-    if (confirm("நிச்சயமாக இந்த விபரங்களை நீக்க வேண்டுமா?")) {
+    if (confirm("நிச்சயமாக நீக்க வேண்டுமா?")) {
         experts = experts.filter(e => e.id !== id);
+        saveToLocalStorage(); // <-- Saved deletion
         handleSearch();
     }
 }
 
-// Open Review Modal System
 window.openReviewSystem = function(id) {
     const expert = experts.find(e => e.id === id);
     if (!expert) return;
@@ -178,9 +222,11 @@ window.openReviewSystem = function(id) {
     if (expert.image) {
         avatarDiv.innerHTML = `<img src="${expert.image}" class="avatar-image">`;
     } else {
-        let iconClass = 'fa-taxi';
-        if (expert.prof === 'mahal') iconClass = 'fa-building-columns';
-        if (expert.prof === 'planner') iconClass = 'fa-wand-magic-sparkles';
+        let iconClass = 'fa-shuttle-space';
+        if (expert.prof === 'lift') iconClass = 'fa-arrow-up-from-ground-water';
+        if (expert.prof === 'generator') iconClass = 'fa-charging-station';
+        if (expert.prof === 'sound') iconClass = 'fa-volume-high';
+        if (expert.prof === 'tents') iconClass = 'fa-campground';
         avatarDiv.innerHTML = `<div class="avatar-container" style="margin-bottom:0;"><i class="fa-solid ${iconClass}"></i></div>`;
     }
 
@@ -201,10 +247,7 @@ function renderReviewsList(expert) {
         const revCard = document.createElement('div');
         revCard.classList.add('single-review-card');
         let stars = '⭐'.repeat(rev.stars);
-        revCard.innerHTML = `
-            <div class="review-stars">${stars}</div>
-            <p class="review-comment">${rev.text}</p>
-        `;
+        revCard.innerHTML = `<div class="review-stars">${stars}</div><p class="review-comment">${rev.text}</p>`;
         modalReviewsList.appendChild(revCard);
     });
 }
@@ -219,13 +262,13 @@ reviewForm.addEventListener('submit', (e) => {
         expert.reviews.unshift({ stars: parseInt(ratingSelect), text: reviewText });
         const totalStars = expert.reviews.reduce((sum, r) => sum + r.stars, 0);
         expert.rating = (totalStars / expert.reviews.length).toFixed(1);
+        saveToLocalStorage(); // <-- Saved new review
         renderReviewsList(expert);
         handleSearch();
         reviewForm.reset();
     }
 });
 
-// SEARCH FILTER WITH PREMIUM SORT LOGIC
 function handleSearch() {
     const searchText = areaSearch.value.toLowerCase().trim();
     const selectedService = serviceFilter.value;
@@ -235,7 +278,6 @@ function handleSearch() {
         const matchesService = (selectedService === 'all') || (expert.prof === selectedService);
         return matchesLocation && matchesService;
     });
-
     renderExperts(filtered);
 }
 
@@ -243,15 +285,13 @@ chips.forEach(chip => {
     chip.addEventListener('click', () => {
         chips.forEach(c => c.classList.remove('active'));
         chip.classList.add('active');
-        const filterValue = chip.getAttribute('data-filter');
-        serviceFilter.value = filterValue;
+        serviceFilter.value = chip.getAttribute('data-filter');
         handleSearch();
     });
 });
 
 searchBtn.addEventListener('click', handleSearch);
 areaSearch.addEventListener('keyup', (e) => { if(e.key === 'Enter') handleSearch(); });
-
 openFormBtn.addEventListener('click', () => { registerModal.style.display = 'flex'; });
 closeRegBtn.addEventListener('click', () => { registerModal.style.display = 'none'; });
 closeRevBtn.addEventListener('click', () => { reviewModal.style.display = 'none'; });
@@ -274,6 +314,7 @@ expertForm.addEventListener('submit', (e) => {
             reviews: []
         };
         experts.unshift(newExpert);
+        saveToLocalStorage(); // <-- Saved new registration
         handleSearch();
         registerModal.style.display = 'none';
         expertForm.reset();
@@ -289,5 +330,6 @@ expertForm.addEventListener('submit', (e) => {
 });
 
 handleSearch();
+    
 
 
