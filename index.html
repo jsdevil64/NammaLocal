@@ -3,45 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Namma Local - Cab, Mahal & Event Planner</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Local Workers - Premium Local Services</title>
+    <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="NammaLocal.css">
+    <link rel="stylesheet" href="dummy3.css">
 </head>
 <body>
 
     <header>
         <div class="logo-container">
             <i class="fa-solid fa-car-side taxi-icon"></i>
-            <h1>NammaLocal<span class="dot">.</span></h1>
+            <h1>Namma Local<span class="dot">.</span></h1>
         </div>
-        <button id="owner-login-btn" class="owner-btn">
-            <i class="fa-solid fa-user-gear"></i> Owner Login
+        <button id="tips-btn" class="tips-header-btn">
+            <i class="fa-solid fa-piggy-bank"></i> TIPS
         </button>
     </header>
 
     <main>
-        <div id="admin-status-bar" class="admin-bar" style="display: none;">
-            <span><i class="fa-solid fa-shield-halved"></i> Owner Mode Active</span>
-            <button id="owner-logout-btn">Logout</button>
-        </div>
-
         <section class="hero-section">
-            <h2>வண்டியா? மண்டபமா? இல்ல விழாவா?<br><span>எல்லாமே நம்ம ஏரியாவில்!</span></h2>
-            <p>லோக்கல் ஆட்டோ/கேப், திருமண மண்டபங்கள் மற்றும் சிறந்த ஃபங்ஷன் பிளானர்கள் ஒரே இடத்தில்.</p>
+            <h2>பயணங்கள் முதல் மங்களகரமான சுபநிகழ்ச்சிகள் வரை<br><span>Elite Local Network!</span></h2>
+            <p>சிறந்த ஆட்டோ/கேப், திருமண மண்டபங்கள் மற்றும் ஃபங்ஷன் பிளானர்கள் ஒரே இடத்தில்.</p>
             
             <div class="search-box-container">
                 <div class="input-wrapper">
                     <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                    <input type="text" id="area-search" placeholder="பகுதி அல்லது பின்கோடை உள்ளிடவும்">
+                    <input type="text" id="area-search" placeholder="உங்கள் ஏரியா அல்லது பின்கோடு அடிக்கவும்...">
                 </div>
                 <div class="select-wrapper">
-                    <i class="fa-solid fa-layer-group brief-icon"></i>
+                    <i class="fa-solid fa-wand-magic-sparkles brief-icon"></i>
                     <select id="service-filter">
-                        <option value="all">அனைத்து சேவைகளும்</option>
-                        <option value="driver">டிரைவர் (Cab / Auto)</option>
-                        <option value="mahal">திருமண மண்டபம் (Mahal)</option>
-                        <option value="planner">பங்ஷன் பிளானர் (Event Planner)</option>
+                        <option value="all">அனைத்து பிரீமியம் சேவைகளும்</option>
+                        <option value="auto_cab">ஆட்டோ / கேப் (Auto & Cab)</option>
+                        <option value="hall">திருமண மண்டபங்கள் (Marriage Halls)</option>
+                        <option value="planner">ஃபங்ஷன் பிளானர் (Event Planners)</option>
                     </select>
                 </div>
                 <button id="search-btn">தேடுங்கள்</button>
@@ -50,23 +45,23 @@
 
         <section class="register-trigger-section">
             <button id="open-form-btn" class="main-register-btn">
-                <i class="fa-solid fa-square-plus"></i> உங்கள் சேவையை இலவசமாக பதிவு செய்ய (Register Here)
+                <i class="fa-solid fa-shield-halved"></i> உங்கள் பிசினஸ் அல்லது வாகனத்தை இலவசமாகப் பதியவும் (Register)
             </button>
         </section>
 
         <section class="quick-categories">
-            <h3>தேவைகள்</h3>
+            <h3>பிரத்தியேக பிரிவுகள்</h3>
             <div class="category-chips">
-                <button class="chip active" data-filter="all">All</button>
-                <button class="chip" data-filter="driver"><i class="fa-solid fa-taxi"></i> Cabs & Autos</button>
-                <button class="chip" data-filter="mahal"><i class="fa-solid fa-building-columns"></i> Mahals</button>
-                <button class="chip" data-filter="planner"><i class="fa-solid fa-wand-magic-sparkles"></i> Planners</button>
+                <button class="chip active" data-filter="all">All Services</button>
+                <button class="chip" data-filter="auto_cab"><i class="fa-solid fa-taxi"></i> Auto / Cab</button>
+                <button class="chip" data-filter="hall"><i class="fa-solid fa-building-columns"></i> Marriage Halls</button>
+                <button class="chip" data-filter="planner"><i class="fa-solid fa-gifts"></i> Event Planners</button>
             </div>
         </section>
 
         <section class="experts-section">
             <div class="section-title-area">
-                <h3>அருகில் உள்ள சேவைகள்</h3>
+                <h3>சான்றளிக்கப்பட்ட விபரங்கள்</h3>
                 <span id="results-count">0 பதிவுகள் உள்ளன</span>
             </div>
             <div class="experts-grid" id="experts-grid">
@@ -77,40 +72,35 @@
     <div id="register-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3><i class="fa-solid fa-address-card"></i> புதிய சேவை பதிவு</h3>
+                <h3><i class="fa-solid fa-id-card-gold"></i> புதிய பிசினஸ் / வாகனப் பதிவு</h3>
                 <span class="close-btn" id="close-reg-btn">&times;</span>
             </div>
             <form id="expert-form">
                 <div class="form-group">
-                    <label><i class="fa-solid fa-user"></i> பெயர் / நிறுவனத்தின் பெயர்</label>
-                    <input type="text" id="name" placeholder="உதாரணம்: ரவி ஆட்டோ / எஸ்பி மஹால்" required>
+                    <label><i class="fa-solid fa-user-tie"></i> பெயர் / நிறுவனத்தின் பெயர்</label>
+                    <input type="text" id="name" placeholder="உதாரணம்: சிவா டிராவல்ஸ் / VIP மஹால்" required>
                 </div>
 
                 <div class="form-group">
-                    <label><i class="fa-solid fa-phone"></i> மொபைல் எண்</label>
+                    <label><i class="fa-solid fa-phone"></i> மொபைல் எண் (WhatsApp எண்)</label>
                     <input type="tel" id="phone" placeholder="98765xxxxx" required>
                 </div>
 
                 <div class="form-group">
-                    <label><i class="fa-solid fa-list"></i> சேவை வகை (Category)</label>
+                    <label><i class="fa-solid fa-layer-group"></i> சேவை வகை (Category)</label>
                     <select id="prof" required>
-                        <option value="driver">டிரைவர் (Cab / Auto Driver)</option>
-                        <option value="mahal">திருமண மண்டபம் (Marriage Mahal)</option>
-                        <option value="planner">பங்ஷன் பிளானர் (Event Planner)</option>
+                        <option value="auto_cab">ஆட்டோ / கேப் (Auto & Cab)</option>
+                        <option value="hall">திருமண மண்டபம் (Marriage Hall)</option>
+                        <option value="planner">ஃபங்ஷன் பிளானர் (Event Planner)</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label><i class="fa-solid fa-map-pin"></i> ஏரியா / லொகேஷன்</label>
-                    <input type="text" id="location" placeholder="உதாரணம்: கோவை, காந்திபுரம்" required>
+                    <label><i class="fa-solid fa-map-location-dot"></i> ஏரியா / லொகேஷன்</label>
+                    <input type="text" id="location" placeholder="உதாரணம்: மதுரை, மாட்டுத்தாவணி" required>
                 </div>
 
-                <div class="form-group">
-                    <label><i class="fa-solid fa-camera"></i> புகைப்படம் (Photo)</label>
-                    <input type="file" id="profile-pic" accept="image/*" class="file-input">
-                </div>
-
-                <button type="submit" class="submit-btn">விபரங்களைச் சேமிக்க</button>
+                <button type="submit" class="submit-btn">விபரங்களைச் சமர்ப்பிக்க</button>
             </form>
         </div>
     </div>
@@ -118,7 +108,7 @@
     <div id="review-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3><i class="fa-solid fa-star"></i> விபரங்கள் & ரிவியூஸ்</h3>
+                <h3><i class="fa-solid fa-award"></i> விபரங்கள் & மதிப்பீடுகள்</h3>
                 <span class="close-btn" id="close-rev-btn">&times;</span>
             </div>
             
@@ -134,7 +124,7 @@
             <hr class="divider">
 
             <div class="add-review-section">
-                <h5>உங்கள் கருத்துக்களைக் கூறவும்:</h5>
+                <h5>உங்கள் மேலான கருத்துக்களைக் கூறவும்:</h5>
                 <form id="review-form">
                     <div class="rating-input-wrapper">
                         <label>ரேட்டிங்:</label>
@@ -147,7 +137,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <textarea id="review-text" rows="2" placeholder="உங்களது அனுபவத்தை எழுதவும்..." required></textarea>
+                        <textarea id="review-text" rows="2" placeholder="சேவை எவ்வாறு இருந்தது என்பதை எழுதவும்..." required></textarea>
                     </div>
                     <button type="submit" class="submit-btn-sm">ரிவியூ சமர்ப்பிக்க</button>
                 </form>
@@ -156,11 +146,33 @@
             <hr class="divider">
 
             <h5>வாடிக்கையாளர் கருத்துக்கள் (<span id="modal-review-count">0</span>):</h5>
-            <div class="reviews-display-list" id="modal-reviews-list">
-                </div>
+            <div class="reviews-display-list" id="modal-reviews-list"></div>
         </div>
     </div>
 
-    <script src="NammaLocal.js"></script>
+    <div id="tips-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-gem" style="color: #D4AF37;"></i> Local Workers - ஆதரவு அளிக்கவும்</h3>
+                <span class="close-btn" id="close-tips-btn">&times;</span>
+            </div>
+            <div style="text-align: center; margin-bottom: 15px;">
+                <p style="font-size: 14px; color: #A4B3C6;">எங்கள் பிரீமியம் சேவை உங்களுக்குப் பிடித்திருந்தால், சிறு தொகையை வழங்கி எங்களை ஊக்குவிக்கலாம்!</p>
+            </div>
+            <form id="tips-form">
+                <div class="form-group">
+                    <label><i class="fa-solid fa-indian-rupee-sign"></i> தொகையை உள்ளிடவும் (Amount)</label>
+                    <input type="number" id="tips-amount" placeholder="100" min="1" required>
+                </div>
+                <button type="submit" class="submit-btn" style="background: linear-gradient(135deg, #D4AF37 0%, #AA7C11 100%); color: #0F172A;">
+                    <i class="fa-solid fa-crown"></i> Pay via UPI
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="dummy3.js"></script>
 </body>
 </html>
+
+            
