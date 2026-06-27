@@ -187,8 +187,13 @@ openFormBtn.addEventListener('click', () => { registerModal.style.display = 'fle
 closeRegBtn.addEventListener('click', () => { registerModal.style.display = 'none'; });
 closeRevBtn.addEventListener('click', () => { reviewModal.style.display = 'none'; });
 
+// படிவச் சமர்ப்பிப்பு (Form Submit) லாஜிக்
 expertForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    
+    const submitBtn = expertForm.querySelector('.submit-btn');
+    submitBtn.textContent = 'பதிவாகிறது... வெயிட் பண்ணுங்க தலை...';
+    submitBtn.disabled = true;
     
     const newExpertData = {
         id: Date.now().toString(),
@@ -201,11 +206,16 @@ expertForm.addEventListener('submit', async (e) => {
         reviews: []
     };
 
+    // லோக்கலாக உடனே கார்டை சேர்க்கிறது
     experts.unshift(newExpertData);
     handleSearch(); 
     
+    // ரெஜிஸ்டர் ஃபார்ம் மோடலை மூடிவிட்டு, ஃபார்மை ரீசெட் செய்கிறது
     registerModal.style.display = 'none';
     expertForm.reset();
+
+    // போட்டோவில் உள்ளபடி கஸ்டம் பாப்-அப்பை உடனே திரையில் காட்டுகிறது
+    successModal.style.display = 'flex';
 
     try {
         await fetch(SCRIPT_URL, {
@@ -217,8 +227,18 @@ expertForm.addEventListener('submit', async (e) => {
         console.log("Saved to Royal Database!");
     } catch (error) {
         console.error("Sheet save error:", error);
+    } finally {
+        submitBtn.textContent = 'விபரங்களைச் சமர்ப்பிக்க';
+        submitBtn.disabled = false;
     }
 });
+
+// 'சரி' பட்டன் கிளிக் செய்யும்போது பாப்-அப் உடனடியாக மறைந்துவிடும்
+if (successOkBtn) {
+    successOkBtn.addEventListener('click', () => {
+        successModal.style.display = 'none';
+    });
+}
 
 loadExpertsFromSheet();
 
